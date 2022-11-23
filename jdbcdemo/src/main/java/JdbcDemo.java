@@ -10,6 +10,10 @@ public class JdbcDemo {
         selectAllDemo();
     }
 
+    public static void insertStudentDemo(){
+
+    }
+
     public static void selectAllDemo(){
         System.out.println("Select DEMO mit JDBC");
         String sqlSelechtAllPersons = "SELECT * FROM `student`";
