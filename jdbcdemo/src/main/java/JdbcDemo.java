@@ -1,6 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class JdbcDemo {
 
@@ -21,6 +19,13 @@ public class JdbcDemo {
 
         try(Connection conn = DriverManager.getConnection(connectionUrl, user, pwd)){
             System.out.println("Verbindung zur DB hergestellt!");
+
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM `student`");
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+
+            }
+
         } catch(SQLException e){
             System.out.println("Fehler beim Aufbau der Verbindung zur DB: " + e.getMessage());
         }
