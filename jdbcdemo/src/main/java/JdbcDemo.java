@@ -5,16 +5,15 @@ public class JdbcDemo {
     public static void main(String[] args) {
         System.out.println("JDBC DEMO!");
 
-        //INSERT INTO `student` (`id`, `name`, `email`) VALUES (NULL, 'Marcel Schranz', 'marcel.schranz@myimst.at'), (NULL, 'Sarah Gosch', 'sarah.gosch@myimst.at');
-
         selectAllDemo();
-        insertStudentDemo();
+        insertStudentDemo("Name des Studenten", "email@prov.at");
         selectAllDemo();
-        updateStudentDemo();
+        updateStudentDemo(4, "Neuer Name", "neueemail@provider.at");
         selectAllDemo();
+        deleteStudentDemo(9);
     }
 
-    public static void deleteStudentDemo(){
+    public static void deleteStudentDemo(int studentID){
         System.out.println("Delete DEMO mit JDBC");
         String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
         String user = "root";
@@ -23,10 +22,12 @@ public class JdbcDemo {
         try(Connection conn = DriverManager.getConnection(connectionUrl, user, pwd)){
             System.out.println("Verbindung zur DB hergestellt!");
             PreparedStatement preparedStatement = conn.prepareStatement(
-                    ""
+                    "DELETE FROM `student` WHERE `student`.`id` = ?"
             );
             try{
-
+                preparedStatement.setInt(1, studentID);
+                int rowAffected = preparedStatement.executeUpdate();
+                System.out.println("Anzahl der gelöschten Datensätze: " + rowAffected);
             } catch (SQLException ex){
                 System.out.println("Fehler im SQL-DELETE Statement: " + ex.getMessage());
             }
@@ -36,7 +37,7 @@ public class JdbcDemo {
         }
     }
 
-    public static void updateStudentDemo(){
+    public static void updateStudentDemo(int id, String neuerName, String neueEmail){
         System.out.println("Update DEMO mit JDBC");
         String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
         String user = "root";
@@ -45,11 +46,12 @@ public class JdbcDemo {
         try(Connection conn = DriverManager.getConnection(connectionUrl, user, pwd)){
             System.out.println("Verbindung zur DB hergestellt!");
             PreparedStatement preparedStatement = conn.prepareStatement(
-                    "UPDATE `student` SET `name` = ?, `email` = ?  WHERE `student`.`id` = 4"
+                    "UPDATE `student` SET `name` = ?, `email` = ?  WHERE `student`.`id` = ?"
             );
             try{
-                preparedStatement.setString(1, "Hans Zimmer");
-                preparedStatement.setString(2, "h.zi@trx.at");
+                preparedStatement.setString(1, neuerName);
+                preparedStatement.setString(2, neueEmail);
+                preparedStatement.setInt(3, id);
                 int affectedRows = preparedStatement.executeUpdate();
                 System.out.println("Anzahl der aktualisierten Datensätze: " + affectedRows);
             } catch (SQLException ex){
@@ -61,7 +63,7 @@ public class JdbcDemo {
         }
     }
 
-    public static void insertStudentDemo(){
+    public static void insertStudentDemo(String name, String email){
         System.out.println("Insert DEMO mit JDBC");
         String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
         String user = "root";
@@ -73,8 +75,8 @@ public class JdbcDemo {
                     "INSERT INTO `student` (`id`, `name`, `email`) VALUES (NULL, ?, ?)"
             );
             try{
-                preparedStatement.setString(1, "Peter Zeck");
-                preparedStatement.setString(2, "p.zeck@hotmail.com");
+                preparedStatement.setString(1, name);
+                preparedStatement.setString(2, email);
                 int rowAffected = preparedStatement.executeUpdate();
                 System.out.println(rowAffected + "Datensätze eingefügt");
             } catch (SQLException ex){
