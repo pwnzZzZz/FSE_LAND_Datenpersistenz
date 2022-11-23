@@ -10,6 +10,8 @@ public class JdbcDemo {
         selectAllDemo();
         insertStudentDemo();
         selectAllDemo();
+        updateStudentDemo();
+        selectAllDemo();
     }
 
     public static void updateStudentDemo(){
@@ -21,12 +23,13 @@ public class JdbcDemo {
         try(Connection conn = DriverManager.getConnection(connectionUrl, user, pwd)){
             System.out.println("Verbindung zur DB hergestellt!");
             PreparedStatement preparedStatement = conn.prepareStatement(
-                    "UPDATE `student` SET `name` = ? WHERE `student`.`id` = 4"
+                    "UPDATE `student` SET `name` = ?, `email` = ?  WHERE `student`.`id` = 4"
             );
             try{
                 preparedStatement.setString(1, "Hans Zimmer");
+                preparedStatement.setString(2, "h.zi@trx.at");
                 int affectedRows = preparedStatement.executeUpdate();
-                System.out.println("");
+                System.out.println("Anzahl der aktualisierten Datensätze: " + affectedRows);
             } catch (SQLException ex){
                 System.out.println("Fehler im SQL-UPDATE Statement: " + ex.getMessage());
             }
