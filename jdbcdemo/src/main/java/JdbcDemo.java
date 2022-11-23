@@ -23,6 +23,12 @@ public class JdbcDemo {
             PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM `student`");
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
+                int id = rs.getInt(1);
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+
+                System.out.println("Student aus der DB: [ID] " + id + " [Name] " + name + " [Email] " + email);
+
 
             }
 
