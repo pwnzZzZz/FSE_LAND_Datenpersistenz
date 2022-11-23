@@ -12,6 +12,30 @@ public class JdbcDemo {
         selectAllDemo();
     }
 
+    public static void updateStudentDemo(){
+        System.out.println("Update DEMO mit JDBC");
+        String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
+        String user = "root";
+        String pwd = "";
+
+        try(Connection conn = DriverManager.getConnection(connectionUrl, user, pwd)){
+            System.out.println("Verbindung zur DB hergestellt!");
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    "UPDATE `student` SET `name` = ? WHERE `student`.`id` = 4"
+            );
+            try{
+                preparedStatement.setString(1, "Hans Zimmer");
+                int affectedRows = preparedStatement.executeUpdate();
+                System.out.println("");
+            } catch (SQLException ex){
+                System.out.println("Fehler im SQL-UPDATE Statement: " + ex.getMessage());
+            }
+
+        } catch(SQLException e){
+            System.out.println("Fehler beim Aufbau der Verbindung zur DB: " + e.getMessage());
+        }
+    }
+
     public static void insertStudentDemo(){
         System.out.println("Insert DEMO mit JDBC");
         String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
