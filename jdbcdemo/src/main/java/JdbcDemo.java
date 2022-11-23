@@ -14,6 +14,28 @@ public class JdbcDemo {
         selectAllDemo();
     }
 
+    public static void deleteStudentDemo(){
+        System.out.println("Delete DEMO mit JDBC");
+        String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
+        String user = "root";
+        String pwd = "";
+
+        try(Connection conn = DriverManager.getConnection(connectionUrl, user, pwd)){
+            System.out.println("Verbindung zur DB hergestellt!");
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    ""
+            );
+            try{
+
+            } catch (SQLException ex){
+                System.out.println("Fehler im SQL-DELETE Statement: " + ex.getMessage());
+            }
+
+        } catch(SQLException e){
+            System.out.println("Fehler beim Aufbau der Verbindung zur DB: " + e.getMessage());
+        }
+    }
+
     public static void updateStudentDemo(){
         System.out.println("Update DEMO mit JDBC");
         String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
