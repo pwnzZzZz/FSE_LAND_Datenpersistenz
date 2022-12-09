@@ -26,7 +26,7 @@ public class MySqlCourseRepository implements MyCourseRepository {
     public Optional<Course> insert(Course entity) {
         Assert.notNull(entity);
 
-        try{
+        try {
             String sql = "INSERT INTO `courses` (`name`, `description`, `hours`, `begindate`, `enddate`, `coursetype`) VALUES(?,?,?,?,?,?)";
             PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             //mapping von der Objektorientierten Welt Richtung Datenbank
@@ -39,19 +39,19 @@ public class MySqlCourseRepository implements MyCourseRepository {
 
             int affectedRows = preparedStatement.executeUpdate();
 
-            if(affectedRows == 0){
+            if (affectedRows == 0) {
                 return Optional.empty();
             }
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if(generatedKeys.next()){
+            if (generatedKeys.next()) {
                 return this.getById(generatedKeys.getLong(1));
             } else {
                 return Optional.empty();
             }
 
 
-        } catch(SQLException sqlException){
+        } catch (SQLException sqlException) {
             throw new DatabaseException(sqlException.getMessage());
         }
     }
@@ -59,18 +59,18 @@ public class MySqlCourseRepository implements MyCourseRepository {
     @Override
     public Optional<Course> getById(Long id) {
         Assert.notNull(id);
-        if(countCoursesInDbWithId(id)==0){
+        if (countCoursesInDbWithId(id) == 0) {
             return Optional.empty();
         } else {
-            try{
-            String sql = "SELECT * FROM `courses` where `id` = ?";
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            try {
+                String sql = "SELECT * FROM `courses` where `id` = ?";
+                PreparedStatement preparedStatement = con.prepareStatement(sql);
+                preparedStatement.setLong(1, id);
+                ResultSet resultSet = preparedStatement.executeQuery();
 
-            //ruft den ersten Datensatz ab und gibt diesen als Kurs zurück
-            resultSet.next();
-            Course course = new Course(
+                //ruft den ersten Datensatz ab und gibt diesen als Kurs zurück
+                resultSet.next();
+                Course course = new Course(
                         resultSet.getLong("id"),
                         resultSet.getString("name"),
                         resultSet.getString("description"),
@@ -80,7 +80,7 @@ public class MySqlCourseRepository implements MyCourseRepository {
                         CourseType.valueOf(resultSet.getString("coursetype"))
                 );
                 return Optional.of(course);
-            } catch(SQLException sqlException){
+            } catch (SQLException sqlException) {
                 throw new DatabaseException(sqlException.getMessage());
             }
         }
@@ -129,7 +129,36 @@ public class MySqlCourseRepository implements MyCourseRepository {
 
     @Override
     public Optional<Course> update(Course entity) {
-        return Optional.empty();
+
+        Assert.notNull(entity);
+
+        String sql = "UPDATE `courses` SET `name` = ?, `description` = ?, `hours` = ?, `begindate` = ?, `enddate` = ?, `coursetype` = ? WHERE `courses`.`id` = ?";
+
+        if (countCoursesInDbWithId(entity.getId()) == 0) {
+            return Optional.empty();
+        } else {
+            try {
+                PreparedStatement preparedStatement = con.prepareStatement(sql);
+                preparedStatement.setString(1, entity.getName());
+                preparedStatement.setString(2, entity.getDescription());
+                preparedStatement.setInt(3, entity.getHours());
+                preparedStatement.setDate(4, entity.getBeginDate());
+                preparedStatement.setDate(5, entity.getEndDate());
+                preparedStatement.setString(6, entity.getCourseType().toString());
+                preparedStatement.setLong(7, entity.getId());
+
+                int affectedRows = preparedStatement.executeUpdate();
+
+                if (affectedRows == 0) {
+                    return Optional.empty();
+                } else {
+                    return this.getById(entity.getId());
+                }
+
+            } catch (SQLException sqlException) {
+                throw new DatabaseException(sqlException.getMessage());
+            }
+        }
     }
 
     @Override
