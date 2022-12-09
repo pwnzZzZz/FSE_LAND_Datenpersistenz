@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
 
         try {
-            Cli myCli = new Cli(new MySqlCourseRepository());
+            Cli myCli    = new Cli(new MySqlCourseRepository());
             myCli.start();
         } catch (SQLException e) {
             System.out.println("Datenbankfehler: " + e.getMessage() + " SQL State: " + e.getSQLState());
