@@ -193,7 +193,7 @@ public class MySqlCourseRepository implements MyCourseRepository {
     @Override
     public List<Course> findAllCoursesByNameOrDescription(String searchText) {
         try {
-            String sql = "SELECT * FROM `course` WHERE LOWER(`description`) LIKE LOWER(?) OR LOWER(`name`) LIKE LOWER(?)";
+            String sql = "SELECT * FROM `courses6` WHERE LOWER(`description`) LIKE LOWER(?) OR LOWER(`name`) LIKE LOWER(?)";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setString(1, "%" + searchText + "%");
             preparedStatement.setString(2, "%" + searchText + "%");
