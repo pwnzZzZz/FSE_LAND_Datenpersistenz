@@ -52,6 +52,9 @@ public class Cli {
                 case "8":
                     courseSearchByName();
                     break;
+                case "9":
+                    courseSearchByDescription();
+                    break;
                 case "x":
                     System.out.println("Auf Wiedersehen!");
                     break;
@@ -61,6 +64,22 @@ public class Cli {
             }
         }
         scan.close();
+    }
+
+    private void courseSearchByDescription() {
+        System.out.println("Geben Sie die Beschreibung des zu suchenden Kurses ein: ");
+        String searchString = scan.nextLine();
+        List<Course> courseList;
+        try{
+            courseList = repo.findAllCoursesByDescription(searchString);
+            for(Course course : courseList){
+                System.out.println(course);
+            }
+        }catch(DatabaseException databaseException){
+            System.out.println("Datenbankfehler bei der Kurssuche: " + databaseException.getMessage());
+        }catch(Exception exception){
+            System.out.println("Unbekannter Fehler bei der Kurssuche: " + exception.getMessage());
+        }
     }
 
     private void courseSearchByName() {
