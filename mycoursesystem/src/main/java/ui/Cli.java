@@ -58,6 +58,9 @@ public class Cli {
                 case "10":
                     courseSearchByCourseType();
                     break;
+                case "11":
+                    courseSearchByStartDate();
+                    break;
                 case "x":
                     System.out.println("Auf Wiedersehen!");
                     break;
@@ -67,6 +70,24 @@ public class Cli {
             }
         }
         scan.close();
+    }
+
+    private void courseSearchByStartDate() {
+        System.out.println("Geben Sie das gewünschte Startdatum ein: (YYYY-MM-DD) ");
+        String searchString = scan.nextLine();
+        List<Course> courseList;
+        try{
+            courseList = repo.findAllCoursesByStartDate(Date.valueOf(searchString));
+            for(Course course : courseList){
+                System.out.println(course);
+            }
+        }catch (IllegalArgumentException illegalArgumentException) {
+            System.out.println("Bitte achten Sie auf das Datumformat! -> YYYY-MM-DD " + illegalArgumentException.getMessage());
+        } catch (DatabaseException databaseException) {
+            System.out.println("Datenbankfehler: " + databaseException.getMessage());
+        } catch (Exception exception) {
+            System.out.println("Unbekannter Fehler: " + exception.getMessage());
+        }
     }
 
     private void courseSearchByCourseType() {
@@ -317,7 +338,7 @@ public class Cli {
         System.out.println("(1) Kurs eingeben \t (2) Alle Kurse anzeigen \t" + "(3) Kursdetails anzeigen");
         System.out.println("(4) Kursdetails ändern \t (5) Kurs löschen \t" + " (6) Kurssuche: (Name und Beschreibung)");
         System.out.println("(7) Laufende Kurse \t (8) Kurssuche: (Name) \t" + " (9) Kurssuche: (Beschreibung)");
-        System.out.println("(10) Kurssuche: (Kurstyp) \t (11) XXX \t" + " (12) XXX");
+        System.out.println("(10) Kurssuche: (Kurstyp) \t (11) Kurssuche: (Startdatum) \t" + " (12) XXX");
         System.out.println("(x) ENDE");
     }
 
