@@ -18,7 +18,7 @@ public class MySqlCourseRepository implements MyCourseRepository {
     private Connection con;
 
     public MySqlCourseRepository() throws SQLException, ClassNotFoundException {
-        this.con = MysqlDatabaseConnection.getConnection("jdbc:mysql://localhost:3306/kurssystem", "root", "");
+        this.con = MySqlDatabaseConnection.getConnection("jdbc:mysql://localhost:3306/kurssystem", "root", "");
     }
 
 

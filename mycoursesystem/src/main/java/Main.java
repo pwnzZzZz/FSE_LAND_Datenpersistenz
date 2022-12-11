@@ -1,8 +1,6 @@
 import dataaccess.MySqlCourseRepository;
-import dataaccess.MysqlDatabaseConnection;
 import ui.Cli;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 public class Main {
@@ -17,4 +15,5 @@ public class Main {
             System.out.println("Datenbankfehler: " + e.getMessage());
         }
     }
+
 }

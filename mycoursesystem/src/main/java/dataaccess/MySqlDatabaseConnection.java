@@ -4,11 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class MysqlDatabaseConnection {
+public class MySqlDatabaseConnection {
     private static Connection con = null;
 
     //Konstruktor ist privat, daher kann nicht mit new eine neue Instanz erzeugt werden
-    private MysqlDatabaseConnection(){
+    private MySqlDatabaseConnection(){
 
     }
 
