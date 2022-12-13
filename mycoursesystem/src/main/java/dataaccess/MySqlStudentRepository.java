@@ -185,11 +185,48 @@ public class MySqlStudentRepository implements MyStudentRepository{
 
     @Override
     public List<Student> findAllStudentsByLastName(String nn) {
-        return null;
+        try {
+            String sql = "SELECT * FROM `students` WHERE LOWER(`nachname`) LIKE LOWER(?)";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, "%" + nn + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<Student> studentArrayList = new ArrayList<>();
+            while (resultSet.next()) {
+                studentArrayList.add(new Student(
+                                resultSet.getLong("id"),
+                                resultSet.getString("vorname"),
+                                resultSet.getString("nachname"),
+                                resultSet.getDate("geburtsdatum")
+                        )
+                );
+            }
+            return studentArrayList;
+
+        } catch (SQLException sqlException) {
+            throw new DatabaseException(sqlException.getMessage());
+        }
     }
 
-    @Override
-    public List<Student> findStudentById(Long id) {
-        return null;
+    public List<Student> findAllStudentsByBirthYear(String year) {
+        try {
+            String sql = "SELECT * FROM `students` WHERE YEAR(`birthdate`) LIKE ?";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, String.valueOf(year));
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<Student> studentArrayList = new ArrayList<>();
+            while (resultSet.next()) {
+                studentArrayList.add(new Student(
+                                resultSet.getLong("id"),
+                                resultSet.getString("vorname"),
+                                resultSet.getString("nachname"),
+                                resultSet.getDate("geburtsdatum")
+                        )
+                );
+            }
+            return studentArrayList;
+        } catch (SQLException sqlException) {
+            throw new DatabaseException(sqlException.getMessage());
+        }
     }
 }

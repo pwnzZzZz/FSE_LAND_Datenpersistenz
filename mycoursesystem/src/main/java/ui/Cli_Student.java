@@ -43,6 +43,15 @@ public class Cli_Student {
                 case "5":
                     deleteStudents();
                     break;
+                case "6":
+                    searchStudentByFirstName();
+                    break;
+                case "7":
+                    searchStudentByLastName();
+                    break;
+                case "8":
+                    searchStudentByBirthYear();
+                    break;
                 case "x":
                     break;
                 default:
@@ -50,6 +59,28 @@ public class Cli_Student {
                     break;
             }
         }
+    }
+
+    private void searchStudentByFirstName() {
+        System.out.println("Geben Sie den Vornamen des zu suchenden Studenten ein: ");
+        String searchString = scan.nextLine();
+        List<Student> studentList;
+        try{
+            studentList = repo.findAllStudentsByFirstName(searchString);
+            for(Student student : studentList){
+                System.out.println(student);
+            }
+        }catch(DatabaseException databaseException){
+            System.out.println("Datenbankfehler bei der Studentensuche: " + databaseException.getMessage());
+        }catch(Exception exception){
+            System.out.println("Unbekannter Fehler bei der Studentensuche: " + exception.getMessage());
+        }
+    }
+
+    private void searchStudentByLastName() {
+    }
+
+    private void searchStudentByBirthYear() {
     }
 
     private void deleteStudents() {
@@ -199,7 +230,7 @@ public class Cli_Student {
         System.out.println("-------------- STUDENTENMANAGEMENT --------------");
         System.out.println("(1) Student eingeben \t (2) Alle Studenten anzeigen \t" + "(3) Studentendetails anzeigen");
         System.out.println("(4) Studentendetails ändern \t (5) Studenten löschen \t" + " (6) Studentensuche: (Vorname)");
-        System.out.println("(7) xxx \t (8) xxx \t" + " (9) xxx");
+        System.out.println("(7) Studentensuche: (Nachname) \t (8) Studentensuche: (Geburtsjahr)");
         System.out.println("(x) ENDE");
     }
 

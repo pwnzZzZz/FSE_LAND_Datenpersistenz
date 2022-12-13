@@ -7,5 +7,5 @@ import java.util.List;
 public interface MyStudentRepository extends BaseRepository<Student, Long>{
     List<Student> findAllStudentsByFirstName(String vn);
     List<Student> findAllStudentsByLastName(String nn);
-    List<Student> findStudentById(Long id);
+    List<Student> findAllStudentsByBirthYear(String year);
 }
