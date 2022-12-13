@@ -145,12 +145,42 @@ public class MySqlStudentRepository implements MyStudentRepository{
 
     @Override
     public void deleteById(Long id) {
+        Assert.notNull(id);
+        String sql = "DELETE FROM `students` WHERE `id` = ?";
+        try {
+            if (countStudentsInDbWithId(id) == 1) {
 
+                PreparedStatement preparedStatement = con.prepareStatement(sql);
+                preparedStatement.setLong(1, id);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException sqlException) {
+            throw new DatabaseException(sqlException.getMessage());
+        }
     }
 
     @Override
     public List<Student> findAllStudentsByFirstName(String vn) {
-        return null;
+        try {
+            String sql = "SELECT * FROM `students` WHERE LOWER(`vorname`) LIKE LOWER(?)";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, "%" + vn + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<Student> studentArrayList = new ArrayList<>();
+            while (resultSet.next()) {
+                studentArrayList.add(new Student(
+                        resultSet.getLong("id"),
+                        resultSet.getString("vorname"),
+                        resultSet.getString("nachname"),
+                        resultSet.getDate("geburtsdatum")
+                        )
+                );
+            }
+            return studentArrayList;
+
+        } catch (SQLException sqlException) {
+            throw new DatabaseException(sqlException.getMessage());
+        }
     }
 
     @Override

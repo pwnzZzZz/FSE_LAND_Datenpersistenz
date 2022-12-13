@@ -40,12 +40,28 @@ public class Cli_Student {
                 case "4":
                     updateStudents();
                     break;
+                case "5":
+                    deleteStudents();
+                    break;
                 case "x":
                     break;
                 default:
                     inputError();
                     break;
             }
+        }
+    }
+
+    private void deleteStudents() {
+        System.out.println("Welchen Studenten möchten Sie löschen? Bitte ID eingeben: ");
+        Long courseIdToDelete = Long.parseLong(scan.nextLine());
+
+        try{
+            repo.deleteById(courseIdToDelete);
+        }catch(DatabaseException databaseException){
+            System.out.println("Datenbankfehler beim Löschen: " + databaseException.getMessage());
+        }catch(Exception e){
+            System.out.println("Unbekannter Fehler beim Löschen: " + e.getMessage());
         }
     }
 
@@ -92,19 +108,16 @@ public class Cli_Student {
 
                 Optional<Student> studentOptional1 = repo.update(
                         new Student(
-                                course.getId(),
-                                name.equals("") ? course.getName() : name,
-                                description.equals("") ? course.getDescription() : description,
-                                hours.equals("") ? course.getHours() : Integer.parseInt(hours),
-                                dateFrom.equals("") ? course.getBeginDate() : Date.valueOf(dateFrom),
-                                dateTo.equals("") ? course.getEndDate() : Date.valueOf(dateTo),
-                                courseType.equals("") ? course.getCourseType() : CourseType.valueOf(courseType)
+                                student.getId(),
+                                vorname.equals("") ? student.getVorname() : vorname,
+                                nachname.equals("") ? student.getVorname() : nachname,
+                                geburtsdatum.equals("") ? student.getGeburtsdatum() : Date.valueOf(geburtsdatum)
                         )
                 );
 
-                optionalCourseUpdated.ifPresentOrElse(
-                        (c) -> System.out.println("Kurs aktualisiert: " + c),
-                        () -> System.out.println("Kurs konnte nicht aktualisiert werden!")
+                studentOptional1.ifPresentOrElse(
+                        (c) -> System.out.println("Student aktualisiert: " + c),
+                        () -> System.out.println("Student konnte nicht aktualisiert werden!")
                 );
 
 
@@ -112,7 +125,7 @@ public class Cli_Student {
         }catch (IllegalArgumentException illegalArgumentException) {
             System.out.println("Eingabefehler: " + illegalArgumentException.getMessage());
         } catch (InvalidValueException invalidValueException) {
-            System.out.println("Kursdaten nicht korrekt angegeben: " + invalidValueException.getMessage());
+            System.out.println("Studentendaten nicht korrekt angegeben: " + invalidValueException.getMessage());
         } catch (DatabaseException databaseException) {
             System.out.println("Datenbankfehler beim Einfügen: " + databaseException.getMessage());
         } catch (Exception exception) {
@@ -185,7 +198,7 @@ public class Cli_Student {
     private void showMenue() {
         System.out.println("-------------- STUDENTENMANAGEMENT --------------");
         System.out.println("(1) Student eingeben \t (2) Alle Studenten anzeigen \t" + "(3) Studentendetails anzeigen");
-        System.out.println("(4) Studentendetails ändern \t (5) xxx \t" + " (6) xxx");
+        System.out.println("(4) Studentendetails ändern \t (5) Studenten löschen \t" + " (6) Studentensuche: (Vorname)");
         System.out.println("(7) xxx \t (8) xxx \t" + " (9) xxx");
         System.out.println("(x) ENDE");
     }
