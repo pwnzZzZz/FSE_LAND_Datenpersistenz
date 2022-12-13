@@ -78,9 +78,35 @@ public class Cli_Student {
     }
 
     private void searchStudentByLastName() {
+        System.out.println("Geben Sie den Nachnamen des zu suchenden Studenten ein: ");
+        String searchString = scan.nextLine();
+        List<Student> studentList;
+        try{
+            studentList = repo.findAllStudentsByLastName(searchString);
+            for(Student student : studentList){
+                System.out.println(student);
+            }
+        }catch(DatabaseException databaseException){
+            System.out.println("Datenbankfehler bei der Studentensuche: " + databaseException.getMessage());
+        }catch(Exception exception){
+            System.out.println("Unbekannter Fehler bei der Studentensuche: " + exception.getMessage());
+        }
     }
 
     private void searchStudentByBirthYear() {
+        System.out.println("Geben Sie das gewünschte Geburtsjahr ein (YYYY): ");
+        String searchString = scan.nextLine();
+        List<Student> list;
+        try{
+            list = repo.findAllStudentsByBirthYear(searchString);
+            for(Student student : list){
+                System.out.println(student);
+            }
+        }catch(DatabaseException databaseException){
+            System.out.println("Datenbankfehler bei Studenten-Anzeige: " + databaseException.getMessage());
+        }catch(Exception exception){
+            System.out.println("Unbekannter Fehler bei Studenten-Anzeige: " + exception.getMessage());
+        }
     }
 
     private void deleteStudents() {

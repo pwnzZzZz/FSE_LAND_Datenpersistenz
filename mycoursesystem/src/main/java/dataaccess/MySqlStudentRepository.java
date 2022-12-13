@@ -209,7 +209,7 @@ public class MySqlStudentRepository implements MyStudentRepository{
 
     public List<Student> findAllStudentsByBirthYear(String year) {
         try {
-            String sql = "SELECT * FROM `students` WHERE YEAR(`birthdate`) LIKE ?";
+            String sql = "SELECT * FROM `students` WHERE YEAR(`geburtsdatum`) LIKE ?";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setString(1, String.valueOf(year));
 
