@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * Das DAO-Interface erbt vom BaseRepository (Basis-DAO)
- * Kann für alle weiteren Repositories verwendet werden
  * Enthält Kursspezifische Methoden
  * Course = Entity
  * Long = Id-Typ

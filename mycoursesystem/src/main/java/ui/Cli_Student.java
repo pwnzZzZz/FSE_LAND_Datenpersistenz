@@ -1,8 +1,16 @@
 package ui;
 
+import dataaccess.DatabaseException;
 import dataaccess.MyCourseRepository;
 import dataaccess.MyStudentRepository;
+import domain.Course;
+import domain.CourseType;
+import domain.InvalidValueException;
+import domain.Student;
 
+import java.sql.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Cli_Student {
@@ -21,23 +29,151 @@ public class Cli_Student {
             input = scan.nextLine();
             switch (input) {
                 case "1":
-                    System.out.println("Kurseingabe");
+                    addStudent();
                     break;
                 case "2":
-                    System.out.println("Kurseingabe");
+                    showAllStudents();
                     break;
                 case "3":
-                    System.out.println("Kurseingabe");
+                    showStudentDetails();
+                    break;
+                case "4":
+                    updateStudents();
                     break;
                 case "x":
-                    System.out.println("Auf Wiedersehen!");
                     break;
                 default:
                     inputError();
                     break;
             }
         }
-        scan.close();
+    }
+
+    private void showStudentDetails() {
+        System.out.println("Für welchen Studenten möchten Sie die Kursdetails anzeigen?");
+        try {
+            Long studentId = Long.parseLong(scan.nextLine());
+            Optional<Student> studentOptional = repo.getById(studentId);
+            if (studentOptional.isPresent()) {
+                System.out.println(studentOptional.get());
+            } else {
+                System.out.println("Kurs mit der ID " + studentId + " nicht gefunden!");
+            }
+        } catch (DatabaseException databaseException) {
+            System.out.println("Datenbankfehler bei Studenten-Detailanzeige: " + databaseException.getMessage());
+        } catch (Exception exception) {
+            System.out.println("Unbekannter Fehler bei Studenten-Detailanzeige: " + exception.getMessage());
+        }
+    }
+
+    private void updateStudents() {
+        System.out.println("Für welche Studenten-ID möchten Sie die Details ändern?");
+        Long studentId = Long.parseLong(scan.nextLine());
+
+        try {
+            Optional<Student> studentOptional = repo.getById(studentId);
+            if (studentOptional.isEmpty()) {
+                System.out.println("Student mit der gegebenen ID nicht in der Datenbank!");
+            } else {
+                Student student = studentOptional.get();
+
+                System.out.println("Änderungen für folgenden Studenten: ");
+                System.out.println(student);
+
+                String vorname, nachname, geburtsdatum;
+
+                System.out.println("Bitte neue Studentendetails angeben (Enter, falls keine Änderung gewünscht ist): ");
+                System.out.println("Vorname: ");
+                vorname = scan.nextLine();
+                System.out.println("Nachname: ");
+                nachname = scan.nextLine();
+                System.out.println("Geburtsdatum (YYYY-MM-DD): ");
+                geburtsdatum = scan.nextLine();
+
+                Optional<Student> studentOptional1 = repo.update(
+                        new Student(
+                                course.getId(),
+                                name.equals("") ? course.getName() : name,
+                                description.equals("") ? course.getDescription() : description,
+                                hours.equals("") ? course.getHours() : Integer.parseInt(hours),
+                                dateFrom.equals("") ? course.getBeginDate() : Date.valueOf(dateFrom),
+                                dateTo.equals("") ? course.getEndDate() : Date.valueOf(dateTo),
+                                courseType.equals("") ? course.getCourseType() : CourseType.valueOf(courseType)
+                        )
+                );
+
+                optionalCourseUpdated.ifPresentOrElse(
+                        (c) -> System.out.println("Kurs aktualisiert: " + c),
+                        () -> System.out.println("Kurs konnte nicht aktualisiert werden!")
+                );
+
+
+            }
+        }catch (IllegalArgumentException illegalArgumentException) {
+            System.out.println("Eingabefehler: " + illegalArgumentException.getMessage());
+        } catch (InvalidValueException invalidValueException) {
+            System.out.println("Kursdaten nicht korrekt angegeben: " + invalidValueException.getMessage());
+        } catch (DatabaseException databaseException) {
+            System.out.println("Datenbankfehler beim Einfügen: " + databaseException.getMessage());
+        } catch (Exception exception) {
+            System.out.println("Unbekannter Fehler beim Einfügen: " + exception.getMessage());
+        }
+    }
+
+    private void showAllStudents() {
+        List<Student> list = null;
+
+        try {
+
+            list = repo.getAll();
+            if (list.size() > 0) {
+                for (Student student : list) {
+                    System.out.println(student);
+                }
+            } else {
+                System.out.println("Studentenliste leer!");
+            }
+
+            //Unchecked (runtime) exceptions
+        } catch (DatabaseException databaseException) {
+            System.out.println("Datenbankfehler bei Anzeige aller Studenten: " + databaseException.getMessage());
+        } catch (Exception exception) {
+            System.out.println("Unbekannter Fehler bei Anzeige aller Studenten: " + exception.getMessage());
+        }
+    }
+
+    private void addStudent() {
+        String vorname, nachname;
+        Date geburtsdatum;
+
+        try {
+            System.out.println("Bitte alle Studentendaten angeben: ");
+            System.out.println("Vorname: ");
+            vorname = scan.nextLine();
+            if (vorname.equals("")) throw new IllegalArgumentException("Eingabe darf nicht leer sein!");
+            System.out.println("Nachname: ");
+            nachname = scan.nextLine();
+            if (nachname.equals("")) throw new IllegalArgumentException("Eingabe darf nicht leer sein!");
+            System.out.println("Geburtsdatum (YYYY-MM-DD): ");
+            geburtsdatum = Date.valueOf(scan.nextLine());
+
+            Optional<Student> studentOptional = repo.insert(
+                    new Student(vorname, nachname, geburtsdatum));
+            if (studentOptional.isPresent()) {
+                System.out.println("Student angelegt: " + studentOptional.get());
+            } else {
+                System.out.println("Student konnte nicht angeleget werden!");
+            }
+
+        } catch (IllegalArgumentException illegalArgumentException) {
+            System.out.println("Eingabefehler: " + illegalArgumentException.getMessage());
+        } catch (InvalidValueException invalidValueException) {
+            System.out.println("Studentendaten nicht korrekt angegeben: " + invalidValueException.getMessage());
+        } catch (DatabaseException databaseException) {
+            System.out.println("Datenbankfehler beim Einfügen: " + databaseException.getMessage());
+        } catch (Exception exception) {
+            System.out.println("Unbekannter Fehler beim Einfügen: " + exception.getMessage());
+        }
     }
 
 
@@ -47,11 +183,10 @@ public class Cli_Student {
 
 
     private void showMenue() {
-        System.out.println("-------------- KURSMANAGEMENT --------------");
-        System.out.println("(1) Kurs eingeben \t (2) Alle Kurse anzeigen \t" + "(3) Kursdetails anzeigen");
-        System.out.println("(4) Kursdetails ändern \t (5) Kurs löschen \t" + " (6) Kurssuche: (Name und Beschreibung)");
-        System.out.println("(7) Laufende Kurse \t (8) Kurssuche: (Name) \t" + " (9) Kurssuche: (Beschreibung)");
-        System.out.println("(10) Kurssuche: (Kurstyp) \t (11) Kurssuche: (Startdatum) \t" + " (12) XXX");
+        System.out.println("-------------- STUDENTENMANAGEMENT --------------");
+        System.out.println("(1) Student eingeben \t (2) Alle Studenten anzeigen \t" + "(3) Studentendetails anzeigen");
+        System.out.println("(4) Studentendetails ändern \t (5) xxx \t" + " (6) xxx");
+        System.out.println("(7) xxx \t (8) xxx \t" + " (9) xxx");
         System.out.println("(x) ENDE");
     }
 

@@ -1,0 +1,1 @@
+CREATE TABLE `kurssystem`.`students` ( `id` INT NOT NULL AUTO_INCREMENT , `vorname` VARCHAR(200) NOT NULL , `nachname` VARCHAR(200) NOT NULL , `geburtsdatum` DATE NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;

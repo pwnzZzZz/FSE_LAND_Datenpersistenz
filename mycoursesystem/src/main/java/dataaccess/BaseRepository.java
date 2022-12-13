@@ -6,6 +6,7 @@ import java.util.Optional;
 /**
  * Die Klasse gibt Standard CRUD-Methoden vor
  * und parametrisiert diese mit generischen Typen
+ * Kann für alle weiteren Repositories verwendet werden
  */
 
 public interface BaseRepository <T,I>{

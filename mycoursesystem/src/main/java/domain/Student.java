@@ -15,6 +15,13 @@ public class Student extends BaseEntity {
 
     }
 
+    public Student(String vn, String nn, Date geb) {
+        super(null);
+        setVorname(vn);
+        setNachname(nn);
+        setGeburtsdatum(geb);
+
+    }
 
     public String getVorname() {
         return vn;
@@ -50,5 +57,14 @@ public class Student extends BaseEntity {
         }else {
             throw new InvalidValueException("Geburtsdatum darf nicht leer sein!");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Student{id=" + this.getId() + ", " +
+                "vn='" + vn + '\'' +
+                ", nn='" + nn + '\'' +
+                ", geb=" + geb +
+                '}';
     }
 }
